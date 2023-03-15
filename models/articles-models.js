@@ -1,7 +1,14 @@
 const db = require('../db/connection.js');
 
 fetchArticles = (topic, sort_by, order) => {
-  const validTopicByOptions = ['mitch', 'cats', 'paper'];
+  const validTopicByOptions = [
+    'mitch',
+    'cats',
+    'paper',
+    'coding',
+    'football',
+    'cooking',
+  ];
   if (topic && !validTopicByOptions.includes(topic)) {
     return Promise.reject({
       status: 404,
