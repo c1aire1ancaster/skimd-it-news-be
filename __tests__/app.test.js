@@ -545,7 +545,6 @@ describe('app', () => {
           .get('/api/articles/1')
           .expect(200)
           .then(({ body }) => {
-
             const { articles } = body;
             expect(typeof articles).toBe('object');
             expect(articles.author).toBe('butter_bridge');
