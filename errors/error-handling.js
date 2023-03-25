@@ -5,6 +5,8 @@ function handle404NonExistantPaths(request, response, next) {
 function handlePSQL400s(error, request, response, next) {
   if (error.code === '22P02') {
     response.status(400).send({ msg: 'Bad request' });
+  } else if (error.code === '42703') {
+    response.status(400).send({ msg: 'Invalid article limit' });
   } else if (error.code === '23503' && error.detail.includes('article')) {
     response.status(404).send({ msg: 'Article_id not found' });
   } else if (error.code === '23503' && error.detail.includes('author')) {

@@ -1,19 +1,21 @@
 {
   "GET /api": {
-    "description": "serves up a json representation of all the available endpoints of the api"
+    "description": "Serves up a json representation of all the available endpoints of the api"
   },
 
   "GET /api/topics": {
-    "description": "serves an array of all topics",
+    "description": "Serves an array of all topic objects",
     "queries": [],
+    "params": [],
     "exampleResponse": {
       "topics": [{ "slug": "football", "description": "Footie!" }]
     }
   },
 
   "POST /api/topics": {
-    "description": "serves an object of a posted topic",
+    "description": "Serves an object of a posted topic",
     "queries": ["author", "topic", "sort_by", "order"],
+    "params": [],
     "send body": ["slug", "description"],
     "exampleResponse": {
       "topics": { "slug": "football", "description": "Footie!" }
@@ -21,8 +23,9 @@
   },
 
   "GET /api/users": {
-    "description": "serves an array of all users",
+    "description": "Serves an array of all user objects",
     "queries": [],
+    "params": [],
     "exampleResponse": {
       "users": [
         {
@@ -35,7 +38,7 @@
   },
 
   "GET /api/users/:username": {
-    "description": "serves an object of a specifically requested user",
+    "description": "Serves an object of a specifically requested user",
     "queries": [],
     "params": ["username"],
     "exampleResponse": {
@@ -48,9 +51,11 @@
   },
 
   "GET /api/articles": {
-    "description": "serves an array of articles",
-    "queries": ["topic", "sort_by", "order"],
+    "description": "Serves an object with two key-value pairs. The first property is an integer representing the total number of articles with any topic queries applied. The second property is an array of all the articles with any topic queries applied",
+    "queries": ["topic", "sort_by", "order", "limit", "p"],
+    "params": [],
     "exampleResponse": {
+      "total_count": 2,
       "articles": [
         {
           "article_id": 1,
@@ -78,8 +83,9 @@
   },
 
   "POST /api/articles": {
-    "description": "serves an object of a posted article",
+    "description": "Serves an object of a posted article",
     "queries": [],
+    "params": [],
     "send body": ["author", "title", "body", "topic", "article_img_url"],
     "exampleResponse": {
       "articles": {
@@ -96,7 +102,7 @@
   },
 
   "GET /api/articles/:article_id": {
-    "description": "serves an object of a specifically requested article",
+    "description": "Serves an object of a specifically requested article",
     "queries": [],
     "params": ["article_id"],
     "exampleResponse": {
@@ -114,7 +120,7 @@
   },
 
   "PATCH /api/articles/:article_id": {
-    "description": "serves an object of a specifically requested article with the vote property updated",
+    "description": "Serves an object of a specifically requested article with the vote property updated",
     "queries": [],
     "params": ["article_id"],
     "send body": ["inc_votes"],
@@ -133,13 +139,13 @@
   },
 
   "DELETE /api/articles/:article_id": {
-    "description": "deletes the specifically requested article and all the comments that are associated with that article (article_id)",
+    "description": "Deletes the specifically requested article and all the comments that are associated with that article (article_id)",
     "queries": [],
     "params": ["article_id"]
   },
 
   "GET /api/articles/:article_id/comments": {
-    "description": "serves an array of comments for a specifically requested article",
+    "description": "Serves an array of comment objects for a specifically requested article",
     "queries": [],
     "params": ["article_id"],
     "exampleResponse": {
@@ -165,7 +171,7 @@
   },
 
   "POST /api/articles/:article_id/comments": {
-    "description": "serves an object of a posted comment",
+    "description": "Serves an object of a posted comment",
     "queries": ["author", "topic", "sort_by", "order"],
     "params": ["article_id"],
     "send body": ["author", "body"],
@@ -182,13 +188,13 @@
   },
 
   "DELETE /api/comments/:comment_id": {
-    "description": "deletes the specifically requested comment",
+    "description": "Deletes the specifically requested comment",
     "queries": [],
     "params": ["comment_id"]
   },
 
   "PATCH /api/comments/:comment_id": {
-    "description": "serves an object of a specifically requested comment with the vote property updated",
+    "description": "Serves an object of a specifically requested comment with the vote property updated",
     "queries": [],
     "params": ["comment_id"],
     "send body": ["inc_votes"],

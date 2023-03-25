@@ -9,6 +9,22 @@ fetchTopics = () => {
   });
 };
 
+fetchTopic = (topic) => {
+  let queryString = 'SELECT * FROM topics WHERE slug = $1';
+  const queryParams = [topic];
+
+  return db.query(queryString, queryParams).then((result) => {
+    if (result.rowCount === 0) {
+      return Promise.reject({
+        status: 404,
+        msg: "Topic doesn't exist",
+      });
+    } else {
+      return result.rows[0].slug;
+    }
+  });
+};
+
 addTopic = (newTopic) => {
   const { slug, description } = newTopic;
 
@@ -32,4 +48,4 @@ addTopic = (newTopic) => {
   });
 };
 
-module.exports = { fetchTopics, addTopic };
+module.exports = { fetchTopics, fetchTopic, addTopic };

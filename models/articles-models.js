@@ -1,12 +1,14 @@
 const db = require('../db/connection.js');
 
-fetchArticles = (topic, sort_by, order = 'DESC', validTopics) => {
-  if (topic && !validTopics.includes(topic)) {
-    return Promise.reject({
-      status: 404,
-      msg: 'Bad request',
-    });
-  }
+fetchArticles = (topic, sort_by, order = 'DESC', limit = 10, p = 1) => {
+  // if (topic && !validTopics.includes(topic)) {
+  //   return Promise.reject({
+  //     status: 404,
+  //     msg: 'Bad request',
+  //   });
+  // }
+
+  // console.log(topic);
 
   const validSortByOptions = [
     'author',
@@ -56,9 +58,44 @@ fetchArticles = (topic, sort_by, order = 'DESC', validTopics) => {
     queryString += `ORDER BY created_at ${order}`;
   }
 
+  queryString += `
+  LIMIT ${limit} 
+  `;
+
+  if (p) {
+    p = Number(p);
+  }
+
+  if (isNaN(p) === true && p !== undefined) {
+    return Promise.reject({
+      status: 404,
+      msg: 'Bad page request',
+    });
+  } else if (p > 1) {
+    let offsetArticles = limit * p - limit;
+    queryString += `
+    OFFSET ${offsetArticles} 
+    `;
+  }
+
   return db.query(queryString, queryParams).then((result) => {
     const articles = result.rows;
     return articles;
+  });
+};
+
+countArticles = (topic) => {
+  let queryString = `SELECT COUNT(*) FROM articles`;
+  const queryParam = [];
+
+  if (topic) {
+    queryString += ' WHERE topic = $1';
+    queryParam.push(topic);
+  }
+
+  return db.query(queryString, queryParam).then((result) => {
+    const articleCount = result.rows[0].count;
+    return Number(articleCount);
   });
 };
 
@@ -161,6 +198,7 @@ removeArticle = (article_id) => {
 
 module.exports = {
   fetchArticles,
+  countArticles,
   fetchArticleById,
   updateArticleVotes,
   addArticle,
