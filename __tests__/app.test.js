@@ -151,9 +151,10 @@ describe('app', () => {
           .get('/api/articles')
           .expect(200)
           .then(({ body }) => {
-            const { articles } = body;
+            const { total_count, articles } = body;
 
-            expect(articles).toHaveLength(12);
+            expect(total_count).toBe(12);
+            expect(articles).toHaveLength(10);
 
             articles.forEach((article) => {
               expect(article).toHaveProperty('author', expect.any(String));
@@ -178,9 +179,10 @@ describe('app', () => {
           .get('/api/articles')
           .expect(200)
           .then(({ body }) => {
-            const { articles } = body;
+            const { total_count, articles } = body;
 
-            expect(articles).toHaveLength(12);
+            expect(total_count).toBe(12);
+            expect(articles).toHaveLength(10);
 
             articles.forEach((article) => {
               expect(article).toHaveProperty(
@@ -203,9 +205,10 @@ describe('app', () => {
           .get('/api/articles?topic=mitch')
           .expect(200)
           .then(({ body }) => {
-            const { articles } = body;
+            const { total_count, articles } = body;
 
-            expect(articles).toHaveLength(11);
+            expect(total_count).toBe(11);
+            expect(articles).toHaveLength(10);
 
             articles.forEach((article) => {
               expect(article.topic).toBe('mitch');
@@ -217,9 +220,10 @@ describe('app', () => {
           .get('/api/articles')
           .expect(200)
           .then(({ body }) => {
-            const { articles } = body;
+            const { total_count, articles } = body;
 
-            expect(articles).toHaveLength(12);
+            expect(total_count).toBe(12);
+            expect(articles).toHaveLength(10);
 
             articles.forEach((article) => {
               expect(article).toHaveProperty('author', expect.any(String));
@@ -244,7 +248,7 @@ describe('app', () => {
           .get('/api/articles?topic=invalid')
           .expect(404)
           .then(({ body }) => {
-            expect(body.msg).toBe('Bad request');
+            expect(body.msg).toBe("Topic doesn't exist");
           });
       });
     });
@@ -255,9 +259,10 @@ describe('app', () => {
           .get('/api/articles?sort_by=author')
           .expect(200)
           .then(({ body }) => {
-            const { articles } = body;
+            const { total_count, articles } = body;
 
-            expect(articles).toHaveLength(12);
+            expect(total_count).toBe(12);
+            expect(articles).toHaveLength(10);
 
             const articlesCopy = [...articles];
 
@@ -280,9 +285,10 @@ describe('app', () => {
           .get('/api/articles?sort_by=title')
           .expect(200)
           .then(({ body }) => {
-            const { articles } = body;
+            const { total_count, articles } = body;
 
-            expect(articles).toHaveLength(12);
+            expect(total_count).toBe(12);
+            expect(articles).toHaveLength(10);
 
             const articlesCopy = [...articles];
 
@@ -305,9 +311,10 @@ describe('app', () => {
           .get('/api/articles?sort_by=article_id')
           .expect(200)
           .then(({ body }) => {
-            const { articles } = body;
+            const { total_count, articles } = body;
 
-            expect(articles).toHaveLength(12);
+            expect(total_count).toBe(12);
+            expect(articles).toHaveLength(10);
 
             const articlesCopy = [...articles];
 
@@ -324,9 +331,10 @@ describe('app', () => {
           .get('/api/articles?sort_by=votes')
           .expect(200)
           .then(({ body }) => {
-            const { articles } = body;
+            const { total_count, articles } = body;
 
-            expect(articles).toHaveLength(12);
+            expect(total_count).toBe(12);
+            expect(articles).toHaveLength(10);
 
             const articlesCopy = [...articles];
 
@@ -343,9 +351,10 @@ describe('app', () => {
           .get('/api/articles?sort_by=comment_count')
           .expect(200)
           .then(({ body }) => {
-            const { articles } = body;
+            const { total_count, articles } = body;
 
-            expect(articles).toHaveLength(12);
+            expect(total_count).toBe(12);
+            expect(articles).toHaveLength(10);
 
             const articlesCopy = [...articles];
 
@@ -362,9 +371,10 @@ describe('app', () => {
           .get('/api/articles')
           .expect(200)
           .then(({ body }) => {
-            const { articles } = body;
+            const { total_count, articles } = body;
 
-            expect(articles).toHaveLength(12);
+            expect(total_count).toBe(12);
+            expect(articles).toHaveLength(10);
 
             const articlesCopy = [...articles];
             const dateOrderedArticles = articlesCopy.sort(
@@ -391,9 +401,10 @@ describe('app', () => {
           .get('/api/articles?order=ASC')
           .expect(200)
           .then(({ body }) => {
-            const { articles } = body;
+            const { total_count, articles } = body;
 
-            expect(articles).toHaveLength(12);
+            expect(total_count).toBe(12);
+            expect(articles).toHaveLength(10);
 
             const articlesCopy = [...articles];
             const dateAscendingArticles = articlesCopy.sort(
@@ -409,9 +420,10 @@ describe('app', () => {
           .get('/api/articles?order=DESC')
           .expect(200)
           .then(({ body }) => {
-            const { articles } = body;
+            const { total_count, articles } = body;
 
-            expect(articles).toHaveLength(12);
+            expect(total_count).toBe(12);
+            expect(articles).toHaveLength(10);
 
             const articlesCopy = [...articles];
             const dateDescendingArticles = articlesCopy.sort(
@@ -428,6 +440,168 @@ describe('app', () => {
           .expect(400)
           .then(({ body }) => {
             expect(body.msg).toBe('Bad request');
+          });
+      });
+    });
+
+    describe('GET /api/articles?limit=...', () => {
+      it('200: accepts a limit query - responds with an array of article objects - the number of article objects is determined by the specified limit', () => {
+        return request(app)
+          .get('/api/articles?limit=9')
+          .expect(200)
+          .then(({ body }) => {
+            const { total_count, articles } = body;
+
+            expect(total_count).toBe(12);
+            expect(articles).toHaveLength(9);
+
+            articles.forEach((article) => {
+              expect(article).toHaveProperty('author', expect.any(String));
+              expect(article).toHaveProperty('title', expect.any(String));
+              expect(article).toHaveProperty('article_id', expect.any(Number));
+              expect(article).toHaveProperty('topic', expect.any(String));
+              expect(article).toHaveProperty('created_at', expect.any(String));
+              expect(article).toHaveProperty('votes', expect.any(Number));
+              expect(article).toHaveProperty(
+                'article_img_url',
+                expect.any(String)
+              );
+              expect(article).toHaveProperty(
+                'comment_count',
+                expect.any(Number)
+              );
+            });
+          });
+      });
+      it('200: if no limit query provided - responds with the default number (10) of article objects in the array', () => {
+        return request(app)
+          .get('/api/articles')
+          .expect(200)
+          .then(({ body }) => {
+            const { total_count, articles } = body;
+
+            expect(total_count).toBe(12);
+            expect(articles).toHaveLength(10);
+
+            articles.forEach((article) => {
+              expect(article).toHaveProperty('author', expect.any(String));
+              expect(article).toHaveProperty('title', expect.any(String));
+              expect(article).toHaveProperty('article_id', expect.any(Number));
+              expect(article).toHaveProperty('topic', expect.any(String));
+              expect(article).toHaveProperty('created_at', expect.any(String));
+              expect(article).toHaveProperty('votes', expect.any(Number));
+              expect(article).toHaveProperty(
+                'article_img_url',
+                expect.any(String)
+              );
+              expect(article).toHaveProperty(
+                'comment_count',
+                expect.any(Number)
+              );
+            });
+          });
+      });
+      it("400: responds with 'Bad request' when sent a limit query with an invalid value", () => {
+        return request(app)
+          .get('/api/articles?limit=invalid')
+          .expect(400)
+          .then(({ body }) => {
+            expect(body.msg).toBe('Invalid article limit');
+          });
+      });
+    });
+
+    describe('GET /api/articles?p=...', () => {
+      it('200: accepts a page (p) query - responds with an array of article objects from that page using the default article limit of 10', () => {
+        return request(app)
+          .get('/api/articles?p=2')
+          .expect(200)
+          .then(({ body }) => {
+            const { total_count, articles } = body;
+
+            expect(total_count).toBe(12);
+            expect(articles).toHaveLength(2);
+
+            articles.forEach((article) => {
+              expect(article).toHaveProperty('author', expect.any(String));
+              expect(article).toHaveProperty('title', expect.any(String));
+              expect(article).toHaveProperty('article_id', expect.any(Number));
+              expect(article).toHaveProperty('topic', expect.any(String));
+              expect(article).toHaveProperty('created_at', expect.any(String));
+              expect(article).toHaveProperty('votes', expect.any(Number));
+              expect(article).toHaveProperty(
+                'article_img_url',
+                expect.any(String)
+              );
+              expect(article).toHaveProperty(
+                'comment_count',
+                expect.any(Number)
+              );
+            });
+          });
+      });
+      it('200: accepts a page (p) query - responds with an array of article objects from that page using the default article limit of 10', () => {
+        return request(app)
+          .get('/api/articles?limit=5&p=3')
+          .expect(200)
+          .then(({ body }) => {
+            const { total_count, articles } = body;
+
+            expect(total_count).toBe(12);
+            expect(articles).toHaveLength(2);
+
+            articles.forEach((article) => {
+              expect(article).toHaveProperty('author', expect.any(String));
+              expect(article).toHaveProperty('title', expect.any(String));
+              expect(article).toHaveProperty('article_id', expect.any(Number));
+              expect(article).toHaveProperty('topic', expect.any(String));
+              expect(article).toHaveProperty('created_at', expect.any(String));
+              expect(article).toHaveProperty('votes', expect.any(Number));
+              expect(article).toHaveProperty(
+                'article_img_url',
+                expect.any(String)
+              );
+              expect(article).toHaveProperty(
+                'comment_count',
+                expect.any(Number)
+              );
+            });
+          });
+      });
+      it('200: if no page (p) query provided - responds with the default number (10) of article objects in the array', () => {
+        return request(app)
+          .get('/api/articles')
+          .expect(200)
+          .then(({ body }) => {
+            const { total_count, articles } = body;
+
+            expect(total_count).toBe(12);
+            expect(articles).toHaveLength(10);
+
+            articles.forEach((article) => {
+              expect(article).toHaveProperty('author', expect.any(String));
+              expect(article).toHaveProperty('title', expect.any(String));
+              expect(article).toHaveProperty('article_id', expect.any(Number));
+              expect(article).toHaveProperty('topic', expect.any(String));
+              expect(article).toHaveProperty('created_at', expect.any(String));
+              expect(article).toHaveProperty('votes', expect.any(Number));
+              expect(article).toHaveProperty(
+                'article_img_url',
+                expect.any(String)
+              );
+              expect(article).toHaveProperty(
+                'comment_count',
+                expect.any(Number)
+              );
+            });
+          });
+      });
+      it("404: responds with 'Bad page request' when sent a page (p) query with an invalid value", () => {
+        return request(app)
+          .get('/api/articles?p=invalid')
+          .expect(404)
+          .then(({ body }) => {
+            expect(body.msg).toBe('Bad page request');
           });
       });
     });

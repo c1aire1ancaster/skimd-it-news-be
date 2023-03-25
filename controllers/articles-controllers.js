@@ -1,27 +1,31 @@
 const {
   fetchArticles,
+  countArticles,
   fetchArticleById,
   updateArticleVotes,
   addArticle,
   removeArticle,
 } = require('../models/articles-models');
 const { removeCommentsByArticleId } = require('../models/comments-models');
-const { fetchTopics } = require('../models/topics-models');
+const { fetchTopics, fetchTopic } = require('../models/topics-models');
 
 sendArticles = (request, response, next) => {
-  const { topic, sort_by, order } = request.query;
+  const { topic, sort_by, order, limit, p } = request.query;
+  const promises = [];
 
-  fetchTopics()
-    .then((topics) => {
-      const validTopics = topics.map((topic) => topic.slug);
-      return validTopics;
-    })
-    .then((validTopics) => {
-      return fetchArticles(topic, sort_by, order, validTopics);
-    })
-    .then((articles) => response.status(200).send({ articles }))
-    .catch((error) => {
-      next(error);
+  const countArticlesPromise = countArticles(topic);
+  const fetchArticlesPromise = fetchArticles(topic, sort_by, order, limit, p);
+  promises.push(countArticlesPromise);
+  promises.push(fetchArticlesPromise);
+
+  if (topic) {
+    const checkTopicPromise = fetchTopic(topic);
+    promises.push(checkTopicPromise);
+  }
+
+  return Promise.all(promises)
+    .then(([total_count, articles]) => {
+      response.status(200).send({ total_count, articles });
     })
     .catch((error) => {
       next(error);
