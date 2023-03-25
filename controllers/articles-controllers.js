@@ -5,14 +5,24 @@ const {
   addArticle,
   removeArticle,
 } = require('../models/articles-models');
-
 const { removeCommentsByArticleId } = require('../models/comments-models');
+const { fetchTopics } = require('../models/topics-models');
 
 sendArticles = (request, response, next) => {
   const { topic, sort_by, order } = request.query;
 
-  fetchArticles(topic, sort_by, order)
+  fetchTopics()
+    .then((topics) => {
+      const validTopics = topics.map((topic) => topic.slug);
+      return validTopics;
+    })
+    .then((validTopics) => {
+      return fetchArticles(topic, sort_by, order, validTopics);
+    })
     .then((articles) => response.status(200).send({ articles }))
+    .catch((error) => {
+      next(error);
+    })
     .catch((error) => {
       next(error);
     });
@@ -45,7 +55,14 @@ patchArticleVotes = (request, response, next) => {
 postArticle = (request, response, next) => {
   const newArticle = request.body;
 
-  addArticle(newArticle)
+  fetchTopics()
+    .then((topics) => {
+      const validTopics = topics.map((topic) => topic.slug);
+      return validTopics;
+    })
+    .then((validTopics) => {
+      return addArticle(newArticle, validTopics);
+    })
     .then((article) => {
       return fetchArticleById(article.article_id);
     })

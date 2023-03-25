@@ -388,7 +388,7 @@ describe('app', () => {
     describe('GET /api/articles?order=...', () => {
       it("200: accepts an order query of 'ascending' - responds with an array of article objects in date (default sort_by value) ascending order (oldest first)", () => {
         return request(app)
-          .get('/api/articles?order=ascending')
+          .get('/api/articles?order=ASC')
           .expect(200)
           .then(({ body }) => {
             const { articles } = body;
@@ -406,7 +406,7 @@ describe('app', () => {
       });
       it("200: accepts an order query of 'descending' - responds with an array of article objects in date (default sort_by value) ascending order (most recent first)", () => {
         return request(app)
-          .get('/api/articles?order=descending')
+          .get('/api/articles?order=DESC')
           .expect(200)
           .then(({ body }) => {
             const { articles } = body;
