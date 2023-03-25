@@ -1,20 +1,13 @@
 const db = require('../db/connection.js');
 
-fetchArticles = (topic, sort_by, order) => {
-  const validTopicByOptions = [
-    'mitch',
-    'cats',
-    'paper',
-    'coding',
-    'football',
-    'cooking',
-  ];
-  if (topic && !validTopicByOptions.includes(topic)) {
+fetchArticles = (topic, sort_by, order = 'DESC', validTopics) => {
+  if (topic && !validTopics.includes(topic)) {
     return Promise.reject({
       status: 404,
       msg: 'Bad request',
     });
   }
+
   const validSortByOptions = [
     'author',
     'title',
@@ -22,6 +15,7 @@ fetchArticles = (topic, sort_by, order) => {
     'votes',
     'comment_count',
   ];
+
   if (sort_by && !validSortByOptions.includes(sort_by)) {
     return Promise.reject({
       status: 400,
@@ -29,7 +23,7 @@ fetchArticles = (topic, sort_by, order) => {
     });
   }
 
-  const validOrderByOptions = ['ascending', 'descending'];
+  const validOrderByOptions = ['ASC', 'DESC'];
   if (order && !validOrderByOptions.includes(order)) {
     return Promise.reject({
       status: 400,
@@ -56,18 +50,10 @@ fetchArticles = (topic, sort_by, order) => {
   GROUP BY articles.article_id
   `;
 
-  let orderArticlesBy = 'DESC';
-
-  if (order === 'descending') {
-    orderArticlesBy = 'DESC';
-  } else if (order === 'ascending') {
-    orderArticlesBy = 'ASC';
-  }
-
   if (sort_by) {
-    queryString += `ORDER BY ${sort_by} ${orderArticlesBy}`;
+    queryString += `ORDER BY ${sort_by} ${order}`;
   } else {
-    queryString += `ORDER BY created_at ${orderArticlesBy}`;
+    queryString += `ORDER BY created_at ${order}`;
   }
 
   return db.query(queryString, queryParams).then((result) => {
@@ -123,7 +109,7 @@ updateArticleVotes = (article_id, inc_votes) => {
     });
 };
 
-addArticle = (newArticle) => {
+addArticle = (newArticle, validTopics) => {
   const { author, title, topic, body } = newArticle;
 
   if (!author || !body || !topic || !title) {
@@ -133,8 +119,7 @@ addArticle = (newArticle) => {
     });
   }
 
-  const validTopicByOptions = ['mitch', 'cats', 'paper'];
-  if (topic && !validTopicByOptions.includes(topic)) {
+  if (topic && !validTopics.includes(topic)) {
     return Promise.reject({
       status: 404,
       msg: 'Topic not found',
