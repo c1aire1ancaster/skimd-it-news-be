@@ -146,7 +146,7 @@
 
   "GET /api/articles/:article_id/comments": {
     "description": "Serves an array of comment objects for a specifically requested article",
-    "queries": [],
+    "queries": ["limit", "p"],
     "params": ["article_id"],
     "exampleResponse": {
       "comments": [

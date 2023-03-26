@@ -8,9 +8,10 @@ const { fetchArticleById } = require('../models/articles-models');
 
 sendCommentsByArticleId = (request, response, next) => {
   const { article_id } = request.params;
+  const { limit, p } = request.query;
 
   const articleCheck = fetchArticleById(article_id);
-  const fetchComments = fetchCommentsByArticleId(article_id);
+  const fetchComments = fetchCommentsByArticleId(article_id, limit, p);
 
   Promise.all([fetchComments, articleCheck])
     .then((result) => {
