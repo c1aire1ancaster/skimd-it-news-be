@@ -501,12 +501,12 @@ describe('app', () => {
             });
           });
       });
-      it("400: responds with 'Bad request' when sent a limit query with an invalid value", () => {
+      it("400: responds with 'Invalid limit' when sent a limit query with an invalid value", () => {
         return request(app)
           .get('/api/articles?limit=invalid')
           .expect(400)
           .then(({ body }) => {
-            expect(body.msg).toBe('Invalid article limit');
+            expect(body.msg).toBe('Invalid limit');
           });
       });
     });
@@ -540,7 +540,7 @@ describe('app', () => {
             });
           });
       });
-      it('200: accepts a page (p) query - responds with an array of article objects from that page using the default article limit of 10', () => {
+      it('200: accepts a page (p) query - responds with an array of article objects from that page using a queried article limit', () => {
         return request(app)
           .get('/api/articles?limit=5&p=3')
           .expect(200)
@@ -568,7 +568,7 @@ describe('app', () => {
             });
           });
       });
-      it('200: if no page (p) query provided - responds with the default number (10) of article objects in the array', () => {
+      it('200: if no page (p) query provided - responds with the first 10 article objects in the array (first 10 due to default limit of 10)', () => {
         return request(app)
           .get('/api/articles')
           .expect(200)
@@ -888,7 +888,7 @@ describe('app', () => {
           .then(({ body }) => {
             const { comments } = body;
 
-            expect(comments).toHaveLength(11);
+            expect(comments).toHaveLength(10);
 
             comments.forEach((comment) => {
               expect(comment).toHaveProperty('comment_id', expect.any(Number));
@@ -922,6 +922,123 @@ describe('app', () => {
           .expect(404)
           .then(({ body }) => {
             expect(body.msg).toBe('Article not found');
+          });
+      });
+    });
+
+    describe('GET /api/articles/:article_id/comments?limit=...', () => {
+      it('200: accepts a limit query - responds with an array of comment objects - the number of comment objects is determined by the specified limit', () => {
+        return request(app)
+          .get('/api/articles/1/comments?limit=9')
+          .expect(200)
+          .then(({ body }) => {
+            const { comments } = body;
+
+            expect(comments).toHaveLength(9);
+
+            comments.forEach((comment) => {
+              expect(comment).toHaveProperty('comment_id', expect.any(Number));
+              expect(comment).toHaveProperty('votes', expect.any(Number));
+              expect(comment).toHaveProperty('created_at', expect.any(String));
+              expect(comment).toHaveProperty('author', expect.any(String));
+              expect(comment).toHaveProperty('body', expect.any(String));
+              expect(comment).toHaveProperty('article_id', expect.any(Number));
+            });
+          });
+      });
+      it('200: if no limit query provided - responds with the default number (10) of article objects in the array', () => {
+        return request(app)
+          .get('/api/articles/1/comments')
+          .expect(200)
+          .then(({ body }) => {
+            const { comments } = body;
+
+            expect(comments).toHaveLength(10);
+
+            comments.forEach((comment) => {
+              expect(comment).toHaveProperty('comment_id', expect.any(Number));
+              expect(comment).toHaveProperty('votes', expect.any(Number));
+              expect(comment).toHaveProperty('created_at', expect.any(String));
+              expect(comment).toHaveProperty('author', expect.any(String));
+              expect(comment).toHaveProperty('body', expect.any(String));
+              expect(comment).toHaveProperty('article_id', expect.any(Number));
+            });
+          });
+      });
+      it("400: responds with 'Bad request' when sent a limit query with an invalid value", () => {
+        return request(app)
+          .get('/api/articles/1/comments?limit=invalid')
+          .expect(400)
+          .then(({ body }) => {
+            expect(body.msg).toBe('Invalid limit');
+          });
+      });
+    });
+
+    describe('GET /api/articles/:article_id/comments?p=...', () => {
+      it('200: accepts a page (p) query - responds with an array of comment objects from that page using the default comment limit of 10', () => {
+        return request(app)
+          .get('/api/articles/1/comments?p=2')
+          .expect(200)
+          .then(({ body }) => {
+            const { comments } = body;
+
+            expect(comments).toHaveLength(1);
+
+            comments.forEach((comment) => {
+              expect(comment).toHaveProperty('comment_id', expect.any(Number));
+              expect(comment).toHaveProperty('votes', expect.any(Number));
+              expect(comment).toHaveProperty('created_at', expect.any(String));
+              expect(comment).toHaveProperty('author', expect.any(String));
+              expect(comment).toHaveProperty('body', expect.any(String));
+              expect(comment).toHaveProperty('article_id', expect.any(Number));
+            });
+          });
+      });
+      it('200: accepts a page (p) query - responds with an array of article objects from that page using a queried article limit', () => {
+        return request(app)
+          .get('/api/articles/1/comments?limit=4&p=3')
+          .expect(200)
+          .then(({ body }) => {
+            const { comments } = body;
+
+            expect(comments).toHaveLength(3);
+
+            comments.forEach((comment) => {
+              expect(comment).toHaveProperty('comment_id', expect.any(Number));
+              expect(comment).toHaveProperty('votes', expect.any(Number));
+              expect(comment).toHaveProperty('created_at', expect.any(String));
+              expect(comment).toHaveProperty('author', expect.any(String));
+              expect(comment).toHaveProperty('body', expect.any(String));
+              expect(comment).toHaveProperty('article_id', expect.any(Number));
+            });
+          });
+      });
+      it('200: if no page (p) query provided - responds with the first 10 comment objects in the array (first 10 due to default limit of 10)', () => {
+        return request(app)
+          .get('/api/articles/1/comments')
+          .expect(200)
+          .then(({ body }) => {
+            const { comments } = body;
+
+            expect(comments).toHaveLength(10);
+
+            comments.forEach((comment) => {
+              expect(comment).toHaveProperty('comment_id', expect.any(Number));
+              expect(comment).toHaveProperty('votes', expect.any(Number));
+              expect(comment).toHaveProperty('created_at', expect.any(String));
+              expect(comment).toHaveProperty('author', expect.any(String));
+              expect(comment).toHaveProperty('body', expect.any(String));
+              expect(comment).toHaveProperty('article_id', expect.any(Number));
+            });
+          });
+      });
+      it("404: responds with 'Bad page request' when sent a page (p) query with an invalid value", () => {
+        return request(app)
+          .get('/api/articles/1/comments?p=invalid')
+          .expect(404)
+          .then(({ body }) => {
+            expect(body.msg).toBe('Bad page request');
           });
       });
     });

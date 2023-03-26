@@ -1,8 +1,28 @@
 const db = require('../db/connection.js');
 
-fetchCommentsByArticleId = (article_id) => {
-  const queryString = `SELECT * FROM comments
+fetchCommentsByArticleId = (article_id, limit = 10, p = 1) => {
+  let queryString = `SELECT * FROM comments
   WHERE article_id = $1`;
+
+  queryString += `
+  LIMIT ${limit} 
+  `;
+
+  if (p) {
+    p = Number(p);
+  }
+
+  if (isNaN(p) === true && p !== undefined) {
+    return Promise.reject({
+      status: 404,
+      msg: 'Bad page request',
+    });
+  } else if (p > 1) {
+    let offsetArticles = limit * p - limit;
+    queryString += `
+    OFFSET ${offsetArticles} 
+    `;
+  }
 
   return db.query(queryString, [article_id]).then((result) => {
     return result.rows;

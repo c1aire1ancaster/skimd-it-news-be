@@ -1,15 +1,6 @@
 const db = require('../db/connection.js');
 
 fetchArticles = (topic, sort_by, order = 'DESC', limit = 10, p = 1) => {
-  // if (topic && !validTopics.includes(topic)) {
-  //   return Promise.reject({
-  //     status: 404,
-  //     msg: 'Bad request',
-  //   });
-  // }
-
-  // console.log(topic);
-
   const validSortByOptions = [
     'author',
     'title',
