@@ -3,7 +3,7 @@
 ## 🔗 Links:
 Link to hosted version: https://skimd-it.onrender.com/
 
-**Important Note**: The link is to the '/' path which the server will correctly serve a 404 error message. Make a request to an existing endpoint (see endpoints file) to be served data from the database. Example endpoint is <code>/api/users</code>. 
+**Important Note**: The link is to the '/' path meaning the serve will correctly respond with a 404 error message. Make a request to an existing endpoint (see endpoints file) to be served data from the database. Example endpoint is <code>/api/users</code>. 
 
 ---
 
