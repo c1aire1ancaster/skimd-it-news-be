@@ -1,4 +1,4 @@
-# Northcoders News API
+# Skim'd It News API
 
 Link to hosted version:
 
