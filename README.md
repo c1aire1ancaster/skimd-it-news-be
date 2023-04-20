@@ -4,7 +4,7 @@ Link to hosted version:
 
 ## Project Summary:
 
-A news service that allows people to create user accounts and then perform CRUD methods on topics, articles and article comments. Users can also vote on articles and comments.
+A news service API that implements a range of CRUD methods on news articles, article comments, news topics and users. 
 
 ---
 
