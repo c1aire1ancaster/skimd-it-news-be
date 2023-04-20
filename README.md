@@ -1,14 +1,19 @@
 # Skim'd It News API
 
-Link to hosted version:
+## 🔗 Links:
+Link to hosted version: https://skimd-it.onrender.com/
 
-## Project Summary:
+**Important Note**: The link is to the '/' path which the server will correctly serve a 404 error message. Make a request to an existing endpoint (see endpoints file) to be served data from the database. Example endpoint is <code>/api/users</code>. 
+
+---
+
+## 🏗️ Project Summary:
 
 A news service API that implements a range of CRUD methods on news articles, article comments, news topics and users. 
 
 ---
 
-## Instructions:
+## ✅ Instructions:
 
 If you wish to clone this project and run it locally, follow the instructions below:
 
@@ -41,7 +46,7 @@ If you wish to clone this project and run it locally, follow the instructions be
 
 ---
 
-## Version Requirements:
+## ⚙️ Version Requirements:
 
 - Node.js: v19.2.0
 - Postgres: v14.6
