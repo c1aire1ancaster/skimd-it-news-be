@@ -2,6 +2,9 @@
 
 Skim'd It News API was my solo backend project for the [Northcoders'](https://northcoders.com/our-courses/coding-bootcamp) Software Engineering Bootcamp. 
 
+---
+---
+
 ## 🔗 Links:
 Link to hosted version: https://skimd-it.onrender.com/
 
