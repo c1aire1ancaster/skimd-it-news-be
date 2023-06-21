@@ -10,7 +10,7 @@ Link to hosted version: https://skimd-it.onrender.com/
 
 **Important Note**: The link is to the '/' path meaning the serve will correctly respond with a 404 error message. Make a request to an existing endpoint (see endpoints file) to be served data from the database. Example endpoint is <code>/api/users</code>. 
 
-Link to repository for backend project for Skim'd It: https://github.com/c1aire1ancaster/skimd-it-news-be
+Link to repository for frontend project for Skim'd It: https://github.com/c1aire1ancaster/skimd-it-news-fe
 
 ---
 
